@@ -1,0 +1,128 @@
+<html>
+<head>
+<script type="text/javascript" src="shaderkit.js"></script>
+<script type="text/javascript" src="filterkit.js"></script>
+
+<script type="text/javascript">
+// Shortcut
+function ft() {
+    return new FilterKit.FilterTree();
+}
+
+function selectSample(id) {
+    if (!id)
+        return;
+    var script = document.getElementById(id).text;
+    document.getElementById("filterScript").value = script.trim();
+    render();
+}
+
+function selectImage(path) {
+    var image = document.getElementById("image");
+    image.src = path;
+}
+
+function render() {
+    try {
+        var filterTree = eval(document.getElementById("filterScript").value);
+        var shaderTree = new FilterKit.ShaderTree(document.getElementById("canvas"), filterTree);
+        var image = document.getElementById("image");
+        shaderTree.render(image);
+    } catch (e) {
+        alert(e);
+    }
+}
+
+function init() {
+    var image = document.getElementById("image");
+    var canvas = document.getElementById("canvas");
+    image.addEventListener('load', function() {
+        canvas.width = image.width;
+        canvas.height = image.height;
+    });
+    var operations = [];
+    for (var f in FilterKit.FilterTree.prototype)
+        operations.push(f);
+    var div = document.getElementById("operations");
+    div.innerText = operations.join(", ");
+    var images = document.getElementById("images");
+    selectImage(images.options[images.selectedIndex].value);
+    var samples = document.getElementById("samples");
+    selectSample(samples.options[samples.selectedIndex].value)
+}
+
+window.addEventListener("load", init, false);
+</script>
+<script id="e1" type="text/sample">
+greyBlur = ft().saturation(0).brightness(0.7).boxBlur()
+ft().multiply(greyBlur).rescale([-0.544, -0.33, -0.066], [1.781, 2.1, 1.639]).contrast(0.8).brightness(0.039).vignette(0.45, 0.8)
+</script>
+<script id="e2" type="text/sample">
+ft().saturation(0.15).posterize(70).rescale([-0.356, -0.224, -0.045],[1.47, 1.425, 1.118]).vignette(0.5, 1)
+</script>
+<script id="e3" type="text/sample">
+ft().rescale([-0.544, -0.257, -0.045], [1.78, 1.636, 1.118]).contrast(0.8).vignette(0.5, 1)
+</script>
+<script id="e4" type="text/sample">
+ft().saturation(0).rescale([-0.399, -0.399, -0.166], [1.307, 1.307, 1.256]).vignette(0.5, 1)
+</script>
+<script id="e5" type="text/sample">
+ft().rescale([-0.333, -0.307, -0.166], [2.511, 1.66, 1.256]).contrast(0.75).bias(1).saturation(0.6).brightness(0.078).vignette(0.55, 1)
+</script>
+<script id="e6" type="text/sample">
+ft().saturation(0.4).contrast(0.75).rescale([-0.153, -0.278, -0.0454], [1.814, 1.766, 1.118]).vignette(0.4, 1)
+</script>
+<script id="e7" type="text/sample">
+tint = ft().rescale([-0.153, -0.279, -0.045], [1.814, 1.767, 1.118]).saturation(0.6)
+ft().adjust(0.1, 0.7, 0.4).saturation(0.6).contrast(0.8).multiply(tint).vignette(0.55, 1)
+</script>
+<script id="e8" type="text/sample">
+color = ft().fill(0.65, 0.46, 0.046, 1)
+blur = ft().gaussianBlur()
+grey = ft().saturation(0)
+ft().overlay(grey).softLight(color).softLight(blur).saturation(0.5).contrast(0.86).vignette(0.5, 1)
+</script>
+<script id="e9" type="text/sample">
+color = ft().fill(0.882, 0.847, 0.441, 1).saturation(0.2)
+blur = ft().gaussianBlur().saturation(0.1).multiply(color)
+ft().saturation(0.2).rescale([-0.375, -0.31, -0.57], [2.825, 1.455, 3.085]).multiply(blur).brightness(0.078).sharpen().contrast(1.1).vignette(0.3, 1)
+</script>
+<script id="e10" type="text/sample">
+ft().sepia().bias(0.6).vignette(0.2, 1.2)
+</script>
+</head>
+<body>
+<img id="image" crossorigin="anonymous"/>
+
+<div>
+Image: <select id="images" onChange="selectImage(this.options[this.selectedIndex].value)">
+  <option selected value="http://i.imgur.com/V5qYiSkl.jpg">Lincoln Continental</option>
+  <option value="http://i.imgur.com/qIy69l.jpg">Stingray</option>
+  <option value="http://i.imgur.com/B06clk7l.jpg">Napoleonfish</option>
+  <option value="http://i.imgur.com/HiPkBl.jpg">Flood Shark</option>
+  <option value="http://i.imgur.com/0UoEzl.jpg">Pepper Spray Cop</option>
+</select>
+
+Effect: <select id="samples" onChange="selectSample(this.options[this.selectedIndex].value)">
+  <option selected value="e1">e1</option>
+  <option value="e2">e2</option>
+  <option value="e3">e3</option>
+  <option value="e4">e4</option>
+  <option value="e5">e5</option>
+  <option value="e6">e6</option>
+  <option value="e7">e7</option>
+  <option value="e8">e8</option>
+  <option value="e9">e9</option>
+  <option value="e10">e10</option>
+</select>
+<button onClick="render()">Render</button>
+</div>
+
+<div>
+<canvas id="canvas" width="465" height="310"></canvas>
+<textarea id="filterScript" style="font: 11pt monospace; width: 100%" rows="10">ft().</textarea>
+</div>
+<code id="operations"></code>
+
+</body>
+</html>
