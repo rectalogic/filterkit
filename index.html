@@ -18,6 +18,7 @@ function selectSample(id) {
 }
 
 function selectImage(path) {
+    document.getElementById("customURL").value = path;
     var image = document.getElementById("image");
     image.src = path;
 }
@@ -96,12 +97,14 @@ ft().sepia().bias(0.6).vignette(0.2, 1.2)
 
 <div>
 Image: <select id="images" onChange="selectImage(this.options[this.selectedIndex].value)">
-  <option selected value="http://i.imgur.com/V5qYiSkl.jpg">Lincoln Continental</option>
-  <option value="http://i.imgur.com/qIy69l.jpg">Stingray</option>
-  <option value="http://i.imgur.com/B06clk7l.jpg">Napoleonfish</option>
-  <option value="http://i.imgur.com/HiPkBl.jpg">Flood Shark</option>
-  <option value="http://i.imgur.com/0UoEzl.jpg">Pepper Spray Cop</option>
+  <option selected value="https://i.imgur.com/V5qYiSkl.jpg">Lincoln Continental</option>
+  <option value="https://i.imgur.com/qIy69l.jpg">Stingray</option>
+  <option value="https://i.imgur.com/B06clk7l.jpg">Napoleonfish</option>
+  <option value="https://i.imgur.com/HiPkBl.jpg">Flood Shark</option>
+  <option value="https://i.imgur.com/0UoEzl.jpg">Pepper Spray Cop</option>
 </select>
+
+URL: <input id="customURL" onInput="selectImage(this.value)" size="40"/>
 
 Effect: <select id="samples" onChange="selectSample(this.options[this.selectedIndex].value)">
   <option selected value="e1">e1</option>
