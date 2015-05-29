@@ -47,9 +47,15 @@ function init() {
     var div = document.getElementById("operations");
     div.innerText = operations.join(", ");
     var images = document.getElementById("images");
-    selectImage(images.options[images.selectedIndex].value);
+    if (window.location.search.startsWith("?url=")) {
+      var url = window.location.search.substring(5);
+      selectImage(url);
+    }
+    else {
+      selectImage(images.options[images.selectedIndex].value);
+    }
     var samples = document.getElementById("samples");
-    selectSample(samples.options[samples.selectedIndex].value)
+    selectSample(samples.options[samples.selectedIndex].value);
 }
 
 window.addEventListener("load", init, false);
